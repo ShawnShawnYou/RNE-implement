@@ -1,7 +1,7 @@
 
 import random
+import networkx as nx
 
-from algorithm.classic_shortest_path_algorithm import classic_shortest_path
 from config.model_config import get_config
 
 """
@@ -11,6 +11,24 @@ from config.model_config import get_config
         sample["t"] = id of t
         sample["value"] = shortest path value from s to t
 """
+
+
+def get_road_graph():
+    road_graph = nx.Graph()
+
+    edges = []
+    with open(get_config("edge_data_path"), "rb") as f:
+        f.readline()
+
+        while True:
+            line = f.readline().split()
+            if not line:
+                break
+            edges.append((int(line[0]), int(line[1]), float(line[2])))
+
+    road_graph.add_weighted_edges_from(edges)
+
+    return road_graph
 
 
 def get_landmark_set(model):
@@ -40,7 +58,7 @@ def get_all_child_list(model, level, g_index):
     return all_child_list
 
 
-def subgraph_level_samples(model, level):
+def subgraph_level_samples(model, level, road_graph):
 
     subgraph_node_list = model.M_local[level]
 
@@ -68,7 +86,10 @@ def subgraph_level_samples(model, level):
             s = g1_index
             t = g2_index
 
-        value = classic_shortest_path(s, t)
+        try:
+            value = nx.dijkstra_path_length(road_graph, s, t)
+        except Exception as e:
+            continue
         sample = {
             "s": s,
             "t": t,
@@ -79,7 +100,7 @@ def subgraph_level_samples(model, level):
     return sample_set
 
 
-def landmark_based_samples(model):
+def landmark_based_samples(model, road_graph):
 
     landmark_index_set = get_landmark_set(model)
 
@@ -87,7 +108,10 @@ def landmark_based_samples(model):
     for i in range(get_config("sample_N")):
         landmark_index_chosen = random.choice(landmark_index_set)
         s = random.randint(0, model.data_size - 1)
-        value = classic_shortest_path(s, landmark_index_chosen)
+        try:
+            value = nx.dijkstra_path_length(road_graph, s, landmark_index_chosen)
+        except Exception as e:
+            continue
         sample = {
             "s": s,
             "t": landmark_index_chosen,
@@ -99,5 +123,5 @@ def landmark_based_samples(model):
 
 
 
-def error_based_samples(model):
+def error_based_samples(model, road_graph):
     pass

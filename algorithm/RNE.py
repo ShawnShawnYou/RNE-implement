@@ -9,9 +9,12 @@ from util.train import training_hier
 def hierarchical_road_network_embedding():
     model = model_build()
 
+    # road network graph
+    road_graph = get_road_graph()
+
     # hierarchy embedding
     for level in range(1, model.num_inside_layer + 1):
-        sample_set = subgraph_level_samples(model, level)
+        sample_set = subgraph_level_samples(model, level, road_graph)
         alpha_list = [0 for i in range(model.num_inside_layer + 1)]
         for i in range(1, model.num_inside_layer + 1):
             alpha_list[i] = level_learning_rate(level, i)
@@ -23,12 +26,12 @@ def hierarchical_road_network_embedding():
     alpha_list[-1] = get_config("alpha_L")
 
     # vertices embedding
-    sample_set = landmark_based_samples(model)
+    sample_set = landmark_based_samples(model, road_graph)
     training_hier(model, alpha_list, sample_set)
 
     # fine tuning
     for k in range(get_config("error_based_epoch")):
-        sample_set = error_based_samples(model)
+        sample_set = error_based_samples(model, road_graph)
         training_hier(model, alpha_list, sample_set)
 
 
