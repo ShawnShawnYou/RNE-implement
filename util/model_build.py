@@ -76,7 +76,7 @@ def model_build():
             model.M_local[model.num_inside_layer][i] = child
             i += 1
 
-    # model_load(model)
+    csv_model_load(model)
 
     return model
 
