@@ -21,10 +21,11 @@ model_config = {
 
     "error_based_epoch": 10000,
     "sample_N": 10000,
+    "sample_N_t": 500,
     "landmark_rate": 0.0001,
 
 
-    "test_round": 10000
+    "test_round": 100000
 
 }
 

@@ -14,7 +14,7 @@ def hierarchical_road_network_embedding():
 
     # hierarchy embedding
     for level in range(1, model.num_inside_layer + 1):
-        sample_set = subgraph_level_samples(model, level, road_graph)
+        sample_set = simple_subgraph_level_samples(model, level, road_graph)
         alpha_list = [0 for i in range(model.num_inside_layer + 1)]
         for i in range(1, model.num_inside_layer + 1):
             alpha_list[i] = level_learning_rate(level, i)

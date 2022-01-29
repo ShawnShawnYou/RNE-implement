@@ -58,6 +58,37 @@ def get_all_child_list(model, level, g_index):
     return all_child_list
 
 
+def simple_subgraph_level_samples(model, level, road_graph):
+    sample_set = []
+
+    for i in range(get_config("sample_N")):
+        s = random.randint(0, model.data_size - 1)
+
+        try:
+            dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
+        except Exception as e:
+            continue
+        candidate_t = list(dijkstra_result_s.keys())
+
+        # Batch for nearest
+        list_t = candidate_t[:get_config("sample_N_t")]
+
+        # Batch for random
+        for j in range(get_config("sample_N_t")):
+            t = random.choice(candidate_t)
+            list_t.append(t)
+
+        for t in list_t:
+            value = dijkstra_result_s[t]
+            sample = {
+                "s": s,
+                "t": t,
+                "value": value
+            }
+            sample_set.append(sample)
+
+    return sample_set
+
 def subgraph_level_samples(model, level, road_graph):
 
     subgraph_node_list = model.M_local[level]
