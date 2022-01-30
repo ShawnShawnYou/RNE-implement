@@ -72,6 +72,20 @@ def csv_model_save(model):
             writer.writerow(now_m_value)
 
 
+def csv_filter(line):
+    line[0] = line[0][2:]
+    line[-1] = line[-1][:-5]
+    for j in range(len(line)):
+        try:
+            tmp = float(line[j])
+        except:
+            tmp = line[j].index('\\')
+            line[j] = line[j][:tmp]
+
+    line = [float(i) for i in line]
+    return line
+
+
 def csv_model_load(model):
 
     with open(get_config("embedding_tree_data_path"), "rb") as f:
@@ -79,17 +93,13 @@ def csv_model_load(model):
             now_layer = model.M_local[i]
             for now_node in now_layer:
                 line = str(f.readline()).split(",")
-                line[0] = line[0][2:]
-                line[-1] = line[-1][:-5]
-                line = [float(i) for i in line]
-                now_node.value = np.array(line)
+                csv_filter(line)
+                now_node.value = np.asarray(line, dtype=float)
 
     with open(get_config("embedding_leaf_data_path"), "rb") as f:
         for i in range(model.data_size):
             now_node = model.get_leaf_node(i)
             line = str(f.readline()).split(",")
-            line[0] = line[0][2:]
-            line[-1] = line[-1][:-5]
-            line = [float(i) for i in line]
-            now_node.value = np.array(line)
+            csv_filter(line)
+            now_node.value = np.asarray(line, dtype=float)
 

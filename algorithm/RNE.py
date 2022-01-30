@@ -4,6 +4,7 @@ from util.model_build import model_build
 from util.sample import *
 from util.save_load import *
 from util.train import training_hier
+from util.evaluate import simple_evaluate
 
 
 def hierarchical_road_network_embedding():
@@ -21,6 +22,7 @@ def hierarchical_road_network_embedding():
         training_hier(model, alpha_list, sample_set)
 
     csv_model_save(model)
+    return
 
     alpha_list = [0 for i in range(model.num_inside_layer + 1)]
     alpha_list[-1] = get_config("alpha_L")
@@ -36,4 +38,11 @@ def hierarchical_road_network_embedding():
 
 
 if __name__ == "__main__":
-    hierarchical_road_network_embedding()
+    print("origin")
+    print(simple_evaluate())
+    print()
+    for i in range(10):
+        hierarchical_road_network_embedding()
+        print(i)
+        print(simple_evaluate())
+        print()

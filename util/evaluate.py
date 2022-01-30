@@ -5,6 +5,8 @@ import csv
 import numpy as np
 from algorithm.classic_shortest_path_algorithm import classic_shortest_path
 from config.model_config import get_config
+from util.sample import get_road_graph
+import networkx as nx
 
 
 def get_file_of_line(path, index):
@@ -44,59 +46,63 @@ def MES(a, b):
 
 
 def error_rate(approx_value, real_value):
+    if real_value == 0:
+        return 0
+    error = abs(approx_value - real_value) / real_value
+    return error
 
-    return abs(approx_value - real_value) / real_value
-
-
-def draw(data):
-    from matplotlib import pyplot as plt
-    from matplotlib import font_manager
-
-
-    a = data
-    # 设置组距
-    d = 3
-    plt.figure(figsize=(20, 8), dpi=80)
-    plt.hist(a, 50)
-    plt.xlabel('error')
-    plt.ylabel('num')
-    plt.xlim(0, 10)
-
-
-    plt.show()
 
 def simple_evaluate():
     with open(get_config("node_data_path"), 'rb') as f:
         num_node = int(f.readline())
 
     embedding = load_embedding(get_config("embedding_final_data_path"))
-
+    road_graph = get_road_graph()
     draw_data = []
     total_error_rate = 0
+    test_round = 0
     for i in range(get_config("test_round")):
         s = random.randint(0, num_node - 2)
-        t = random.randint(0, num_node - 2)
 
-        real_value = classic_shortest_path(s, t) / 10**get_config("norm_factor")
+        try:
+            dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
+        except Exception as e:
+            continue
 
-        # TODO: 这里还是一次性全读进内存把，读csv太傻了
-        vector_s = np.array(embedding[s]).astype(np.float)
-        vector_t = np.array(embedding[t]).astype(np.float)
-        approx_value = np.linalg.norm(vector_s - vector_t, ord=1) / get_config("dimension")
-        # approx_value = np.sum(abs(vector_s - vector_t), keepdims=True)
-        error_rate_value = error_rate(approx_value, real_value)
-        total_error_rate += error_rate(approx_value, real_value)
-        draw_data.append(error_rate_value)
+        for j in range(100):
+            try:
+                t = random.randint(0, num_node - 2)
+                real_value = dijkstra_result_s[t]
+            except Exception as e:
+                continue
+            test_round += 1
+            vector_s = np.array(embedding[s]).astype(np.float)
+            vector_t = np.array(embedding[t]).astype(np.float)
+            approx_value = np.linalg.norm(vector_s - vector_t, ord=1) / get_config("dimension")
+            # approx_value = np.sum(abs(vector_s - vector_t), keepdims=True)
+            error_rate_value = error_rate(approx_value, real_value) * 100
 
-    avg_error_rate = total_error_rate / get_config("test_round")
+            total_error_rate += error_rate_value
+            draw_data.append(error_rate_value)
 
-    return avg_error_rate, draw_data
+    avg_error_rate = total_error_rate / test_round
+
+    draw_data.sort()
+    count = [0 for i in range(11)]
+
+    for i in draw_data:
+        if i < 100:
+            count[int(i) % 10] += 1
+        else:
+            count[10] += 1
+
+    count = [round(i / test_round, 4) for i in count]
+
+    return avg_error_rate, count
 
 
 if __name__ == "__main__":
-    avg_error_rate, draw_data = simple_evaluate()
-    draw(draw_data)
-    print(avg_error_rate)
+    print(simple_evaluate())
 
 
 

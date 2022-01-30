@@ -71,10 +71,11 @@ def simple_subgraph_level_samples(model, level, road_graph):
         candidate_t = list(dijkstra_result_s.keys())
 
         # Batch for nearest
-        list_t = candidate_t[:get_config("sample_N_t")]
+        # list_t = candidate_t[:get_config("sample_N_t")]
+        list_t = []
 
         # Batch for random
-        for j in range(get_config("sample_N_t")):
+        for j in range(2 * get_config("sample_N_t")):
             t = random.choice(candidate_t)
             list_t.append(t)
 
