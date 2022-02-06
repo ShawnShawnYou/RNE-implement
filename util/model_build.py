@@ -71,12 +71,13 @@ def model_build():
             if not node:
                 break
             x, y = float(node[0]), float(node[1])
+            model.gps_positions[i] = (x, y)
             index_grid = in_which_grid(x, y, max_x, min_x, max_y, min_y)
             child = model.M_local[model.num_inside_layer - 1][index_grid].insert_child(i)
             model.M_local[model.num_inside_layer][i] = child
             i += 1
 
-    csv_model_load(model)
+    # csv_model_load(model)
 
     return model
 

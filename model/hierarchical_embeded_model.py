@@ -7,7 +7,7 @@ class TreeNode(object):
     def __init__(self, parent=None, level=None, node_id=None):
         dimension = get_config("dimension")
 
-        self.value = np.random.randn(dimension)
+        self.value = np.random.randn(dimension) * 10000
         self.node_id = node_id
         self.level = level
         
@@ -41,11 +41,13 @@ class Model(object):
                 for j in range(fan_out):
                     child = node.insert_child()
                     self.M_local[i + 1].append(child)
+        self.gps_positions = []
 
 
     def set_leaf_node_space(self, num_node):
         self.data_size = num_node
         self.M_local[self.num_inside_layer] = [None for i in range(num_node)]
+        self.gps_positions = [None for i in range(num_node)]
 
 
     def get_M_value_of_Leaf(self, index):

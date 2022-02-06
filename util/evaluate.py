@@ -28,7 +28,6 @@ def get_file_of_line(path, index):
 def load_embedding(path):
     with open(path) as f:
         reader = csv.reader(f)
-        headers = next(reader)
 
         i = 0
         row_list = []
@@ -62,7 +61,7 @@ def simple_evaluate():
     total_error_rate = 0
     test_round = 0
     for i in range(get_config("test_round")):
-        s = random.randint(0, num_node - 2)
+        s = random.randint(0, num_node - 1)
 
         try:
             dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
@@ -71,7 +70,7 @@ def simple_evaluate():
 
         for j in range(100):
             try:
-                t = random.randint(0, num_node - 2)
+                t = random.randint(0, num_node - 1)
                 real_value = dijkstra_result_s[t]
             except Exception as e:
                 continue

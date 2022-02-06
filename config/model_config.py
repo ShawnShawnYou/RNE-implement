@@ -14,13 +14,13 @@ model_config = {
     "embedding_tree_data_path": "../dataset/chengdu/chengdu_tree_embedding.csv",
     "embedding_final_data_path": "../dataset/chengdu/chengdu_final_embedding.csv",
 
-    "alpha": 0.001,
-    "alpha_L": 0.0005,
+    "alpha": 0.01,
+    "alpha_L": 0.005,
     "variance": 1,  # 为1是标准高斯分布,
     "norm_factor": 0,
 
     "error_based_epoch": 10000,
-    "sample_N": 100,
+    "sample_N": 1000,
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
 
