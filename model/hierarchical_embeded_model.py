@@ -1,13 +1,15 @@
 import numpy as np
 import math
 from config.model_config import get_config
+from util.train import normalization
 
 
 class TreeNode(object):
     def __init__(self, parent=None, level=None, node_id=None):
         dimension = get_config("dimension")
 
-        self.value = np.random.randn(dimension) * 10000
+        self.value = np.random.randn(dimension)
+        self.value = normalization(self.value)
         self.node_id = node_id
         self.level = level
         

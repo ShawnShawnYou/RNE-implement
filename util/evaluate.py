@@ -71,7 +71,7 @@ def simple_evaluate():
         for j in range(100):
             try:
                 t = random.randint(0, num_node - 1)
-                real_value = dijkstra_result_s[t]
+                real_value = dijkstra_result_s[t] / 10**get_config("norm_factor")
             except Exception as e:
                 continue
             test_round += 1

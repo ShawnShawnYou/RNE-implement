@@ -17,7 +17,7 @@ model_config = {
     "alpha": 0.01,
     "alpha_L": 0.005,
     "variance": 1,  # 为1是标准高斯分布,
-    "norm_factor": 0,
+    "norm_factor": 3,
 
     "error_based_epoch": 10000,
     "sample_N": 1000,

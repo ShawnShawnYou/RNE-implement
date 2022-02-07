@@ -4,11 +4,16 @@ import numpy as np
 from config.model_config import get_config
 
 
+def normalization(data):
+    _range = np.max(data) - np.min(data)
+    return (data - np.min(data)) / _range
+
+
 def training_hier(model, alpha_list, sample_set):
     for sample in sample_set:
         s = sample['s']
         t = sample['t']
-        shortest_path_value = sample['value']
+        shortest_path_value = sample['value'] / 10**get_config("norm_factor")
 
         vector_s = model.get_M_value_of_Leaf(s)
         vector_t = model.get_M_value_of_Leaf(t)
@@ -18,7 +23,7 @@ def training_hier(model, alpha_list, sample_set):
         # loss = (approximate_shortest_path_value - shortest_path_value) ** 2
         # TODO: 这个导数可能出问题了，导致会一直下降，应该是value要降范围到-1到1把
         derivative_s = 2 * np.sign(vector_s - vector_t) * \
-                       (approximate_shortest_path_value - shortest_path_value) / 10**get_config("norm_factor")
+                       (approximate_shortest_path_value - shortest_path_value)
 
 
         derivative_t = -1 * derivative_s
@@ -31,7 +36,9 @@ def training_hier(model, alpha_list, sample_set):
             alpha = alpha_list[now_level]
 
             now_s_node.value -= alpha * derivative_s
+            now_s_node.value = normalization(now_s_node.value)
             now_t_node.value -= alpha * derivative_t
+            now_t_node.value = normalization(now_t_node.value)
 
             now_s_node = now_s_node.parent
             now_t_node = now_t_node.parent
