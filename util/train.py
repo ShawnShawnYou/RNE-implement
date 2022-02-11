@@ -35,10 +35,8 @@ def training_hier(model, alpha_list, sample_set):
             now_level = model.num_inside_layer - i
             alpha = alpha_list[now_level]
 
-            now_s_node.value -= alpha * derivative_s
-            now_s_node.value = normalization(now_s_node.value)
-            now_t_node.value -= alpha * derivative_t
-            now_t_node.value = normalization(now_t_node.value)
+            now_s_node.value -= alpha * (derivative_s + get_config("regular_factor") * now_s_node.value)
+            now_t_node.value -= alpha * (derivative_t + get_config("regular_factor") * now_t_node.value)
 
             now_s_node = now_s_node.parent
             now_t_node = now_t_node.parent

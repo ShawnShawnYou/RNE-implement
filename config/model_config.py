@@ -16,6 +16,7 @@ model_config = {
 
     "alpha": 0.01,
     "alpha_L": 0.005,
+    "regular_factor": 30,
     "variance": 1,  # 为1是标准高斯分布,
     "norm_factor": 3,
 
@@ -23,7 +24,6 @@ model_config = {
     "sample_N": 1000,
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
-
 
     "test_round": 100
 
