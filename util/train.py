@@ -2,6 +2,7 @@ from algorithm.classic_shortest_path_algorithm import classic_shortest_path
 import numpy as np
 
 from config.model_config import get_config
+from util.evaluate import error_rate
 
 
 def normalization(data):
@@ -21,6 +22,7 @@ def training_hier(model, alpha_list, sample_set):
         # 下面这个算法没啥用，还是要单独计算导数的公式的
         approximate_shortest_path_value = np.linalg.norm(vector_s - vector_t, ord=1) / get_config("dimension")
         # loss = (approximate_shortest_path_value - shortest_path_value) ** 2
+        # error_rate_value = error_rate(approximate_shortest_path_value, shortest_path_value) * 100
         # TODO: 这个导数可能出问题了，导致会一直下降，应该是value要降范围到-1到1把
         derivative_s = 2 * np.sign(vector_s - vector_t) * \
                        (approximate_shortest_path_value - shortest_path_value)
@@ -35,8 +37,8 @@ def training_hier(model, alpha_list, sample_set):
             now_level = model.num_inside_layer - i
             alpha = alpha_list[now_level]
 
-            now_s_node.value -= alpha * (derivative_s + get_config("regular_factor") * now_s_node.value)
-            now_t_node.value -= alpha * (derivative_t + get_config("regular_factor") * now_t_node.value)
+            now_s_node.value -= (alpha * derivative_s + get_config("regular_factor") * now_s_node.value)
+            now_t_node.value -= (alpha * derivative_t + get_config("regular_factor") * now_t_node.value)
 
             now_s_node = now_s_node.parent
             now_t_node = now_t_node.parent

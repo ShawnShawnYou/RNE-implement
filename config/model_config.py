@@ -16,8 +16,8 @@ model_config = {
 
     "alpha": 0.1,
     "alpha_L": 0.05,
-    "regular_factor": 4,
-    "variance": 1,  # 为1是标准高斯分布,
+    "regular_factor": 0.7,
+    "variance": 10,  # 为1是标准高斯分布,
     "norm_factor": 3,
 
     "error_based_epoch": 10000,

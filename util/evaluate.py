@@ -91,11 +91,11 @@ def simple_evaluate():
 
     for i in draw_data:
         if i < 100:
-            count[int(i) % 10] += 1
+            count[int(i / 10)] += 1
         else:
             count[10] += 1
 
-    count = [round(i / test_round, 4) for i in count]
+    count = [round(i * 100 / test_round, 4) for i in count]
 
     return avg_error_rate, count
 
