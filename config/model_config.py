@@ -14,17 +14,17 @@ model_config = {
     "embedding_tree_data_path": "../dataset/chengdu/chengdu_tree_embedding.csv",
     "embedding_final_data_path": "../dataset/chengdu/chengdu_final_embedding.csv",
 
-    "alpha": 0.1,
+    "alpha": 0.05,
     "alpha_L": 0.05,
-    "regular_factor": 0.7,
-    "variance": 10,  # 为1是标准高斯分布,
+    "regular_factor": 0.8,
+    "variance": 20,  # 为1是标准高斯分布,
     "norm_factor": 3,
 
     "error_based_epoch": 10000,
     "sample_N": 1000,
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
-
+    # TODO:做下坐标和哪个啥的映射关系；;
     "test_round": 100
 
 }

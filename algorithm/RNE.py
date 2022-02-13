@@ -38,9 +38,9 @@ def hierarchical_road_network_embedding():
 
 
 if __name__ == "__main__":
-    # print("origin")
-    # print(simple_evaluate())
-    # print()
+    print("origin")
+    print(simple_evaluate())
+    print()
     for i in range(40):
         hierarchical_road_network_embedding()
         print(i)
