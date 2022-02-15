@@ -62,7 +62,7 @@ def simple_evaluate():
     test_round = 0
     for i in range(get_config("test_round")):
         s = random.randint(0, num_node - 1)
-
+        # s = 1
         try:
             dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
         except Exception as e:
@@ -71,13 +71,14 @@ def simple_evaluate():
         for j in range(100):
             try:
                 t = random.randint(0, num_node - 1)
+                # t = 200000
                 real_value = dijkstra_result_s[t] / 10**get_config("norm_factor")
             except Exception as e:
                 continue
             test_round += 1
             vector_s = np.array(embedding[s]).astype(np.float)
             vector_t = np.array(embedding[t]).astype(np.float)
-            approx_value = np.linalg.norm(vector_s - vector_t, ord=1) / get_config("dimension")
+            approx_value = np.linalg.norm(vector_s - vector_t, ord=1)
             # approx_value = np.sum(abs(vector_s - vector_t), keepdims=True)
             error_rate_value = error_rate(approx_value, real_value) * 100
 

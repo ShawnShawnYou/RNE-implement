@@ -63,7 +63,7 @@ def simple_subgraph_level_samples(model, level, road_graph):
 
     for i in range(get_config("sample_N")):
         s = random.randint(0, model.data_size - 1)
-
+        # s = 1
         try:
             dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
         except Exception as e:
@@ -77,6 +77,7 @@ def simple_subgraph_level_samples(model, level, road_graph):
         # Batch for random
         for j in range(2 * get_config("sample_N_t")):
             t = random.choice(candidate_t)
+            # t = 200000
             list_t.append(t)
 
         for t in list_t:

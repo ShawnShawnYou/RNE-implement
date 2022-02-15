@@ -54,7 +54,7 @@ class Model(object):
 
     def get_M_value_of_Leaf(self, index):
         now_node = self.get_leaf_node(index)
-        value_m = now_node.value
+        value_m = np.array(now_node.value)
         while True:
             now_node = now_node.parent
             if now_node is None:
