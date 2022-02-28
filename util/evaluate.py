@@ -58,8 +58,14 @@ def simple_evaluate():
     embedding = load_embedding(get_config("embedding_final_data_path"))
     road_graph = get_road_graph()
     draw_data = []
+
     total_error_rate = 0
+    total_normal_error_rate = 0
+    total_overflow_error_rate = 0
+
     test_round = 0
+    normal_round = 0
+    overflow_round = 0
     for i in range(get_config("test_round")):
         s = random.randint(0, num_node - 1)
         # s = 1
@@ -75,17 +81,27 @@ def simple_evaluate():
                 real_value = dijkstra_result_s[t] / 10**get_config("norm_factor")
             except Exception as e:
                 continue
-            test_round += 1
+
             vector_s = np.array(embedding[s]).astype(np.float)
             vector_t = np.array(embedding[t]).astype(np.float)
             approx_value = np.linalg.norm(vector_s - vector_t, ord=1)
             # approx_value = np.sum(abs(vector_s - vector_t), keepdims=True)
             error_rate_value = error_rate(approx_value, real_value) * 100
 
+            test_round += 1
             total_error_rate += error_rate_value
+            if error_rate_value >= 100:
+                total_overflow_error_rate += error_rate_value
+                overflow_round += 1
+            else:
+                total_normal_error_rate += error_rate_value
+                normal_round += 1
+
             draw_data.append(error_rate_value)
 
     avg_error_rate = total_error_rate / test_round
+    avg_normal_rate = total_normal_error_rate / normal_round
+    avg_overflow_rate = total_overflow_error_rate / overflow_round
 
     draw_data.sort()
     count = [0 for i in range(11)]
@@ -98,11 +114,18 @@ def simple_evaluate():
 
     count = [round(i * 100 / test_round, 4) for i in count]
 
-    return avg_error_rate, count
+    return avg_error_rate, avg_normal_rate, avg_overflow_rate, count, draw_data
 
 
 if __name__ == "__main__":
-    print(simple_evaluate())
+    avg_error_rate, avg_normal_rate, avg_overflow_rate, count, draw_data = simple_evaluate()
+
+    print(avg_error_rate)
+    print(avg_normal_rate)
+    print(avg_overflow_rate)
+    print(count)
+    print(draw_data[10000], draw_data[25000], draw_data[50000],
+          draw_data[75000], draw_data[90000], draw_data[-1])
 
 
 

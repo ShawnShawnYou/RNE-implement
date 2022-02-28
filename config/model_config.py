@@ -14,7 +14,7 @@ model_config = {
     "embedding_tree_data_path": "../dataset/chengdu/chengdu_tree_embedding.csv",
     "embedding_final_data_path": "../dataset/chengdu/chengdu_final_embedding.csv",
 
-    "alpha": 0.001,
+    "alpha": 0.00001,
     "alpha_L": 0.05,
     "regular_factor": 0.8,
     "variance": 3,  # 为1是标准高斯分布,
@@ -25,7 +25,7 @@ model_config = {
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
     # TODO:做下坐标和哪个啥的映射关系；;
-    "test_round": 100
+    "test_round": 1000
 
 }
 

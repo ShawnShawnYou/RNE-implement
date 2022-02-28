@@ -41,8 +41,8 @@ if __name__ == "__main__":
     # print("origin")
     # print(simple_evaluate())
     # print()
-    for i in range(40):
+    for i in range(100):
         hierarchical_road_network_embedding()
         print(i)
-        # print(simple_evaluate())
+        print(simple_evaluate())
         print()
