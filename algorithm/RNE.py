@@ -14,11 +14,22 @@ def hierarchical_road_network_embedding():
     road_graph = get_road_graph()
 
     # hierarchy embedding
+    alpha_list = []
     for level in range(1, model.num_inside_layer + 1):
         sample_set = simple_subgraph_level_samples(model, level, road_graph)
         alpha_list = [0 for i in range(model.num_inside_layer + 1)]
         for i in range(1, model.num_inside_layer + 1):
             alpha_list[i] = level_learning_rate(level, i)
+        training_hier(model, alpha_list, sample_set)
+
+    # fine tuning
+    print_flag = False
+    test_round = get_config("test_round")
+    for k in range(get_config("error_based_epoch")):
+        if k == get_config("error_based_epoch") - 1:
+            print_flag = True
+            test_round *= 10
+        sample_set = simple_evaluate(print_flag, test_round)
         training_hier(model, alpha_list, sample_set)
 
     csv_model_save(model)
@@ -31,10 +42,7 @@ def hierarchical_road_network_embedding():
     sample_set = landmark_based_samples(model, road_graph)
     training_hier(model, alpha_list, sample_set)
 
-    # fine tuning
-    for k in range(get_config("error_based_epoch")):
-        sample_set = error_based_samples(model, road_graph)
-        training_hier(model, alpha_list, sample_set)
+
 
 
 if __name__ == "__main__":
@@ -42,7 +50,6 @@ if __name__ == "__main__":
     # print(simple_evaluate())
     # print()
     for i in range(100):
-        hierarchical_road_network_embedding()
         print(i)
-        print(simple_evaluate())
+        hierarchical_road_network_embedding()
         print()

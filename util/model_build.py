@@ -55,25 +55,51 @@ def get_range_of_data():
     return max_x, min_x, max_y, min_y
 
 
+def read_cluster(model):
+    all_cluster = []
+    cluster_16 = []
+    with open(get_config("cluster_all_path"), "rb") as f:
+        for i in range(model.data_size):
+            value = int(f.readline())
+            all_cluster.append(value)
+
+    with open(get_config("cluster_16_path"), "rb") as f:
+        for i in range(16):
+            value = int(f.readline())
+            cluster_16.append(value)
+
+    index_cluster = [0 for i in range(16)]
+    for i in range(16):
+        index_cluster[cluster_16[i]] = i
+
+    return all_cluster, index_cluster
+
+
 def model_build():
     model = Model()
 
     # pseudo_k_way_partition
-    max_x, min_x, max_y, min_y = get_range_of_data()
+    # max_x, min_x, max_y, min_y = get_range_of_data()
 
     with open(get_config("node_data_path"), 'rb') as node_f:
         num_node = int(node_f.readline())
         model.set_leaf_node_space(num_node)
+        all_cluster, index_cluster = read_cluster(model)
+
         i = 0
         while True:
             node = node_f.readline().split()
 
             if not node:
                 break
-            x, y = float(node[0]), float(node[1])
-            model.gps_positions[i] = (x, y)
-            index_grid = in_which_grid(x, y, max_x, min_x, max_y, min_y)
-            child = model.M_local[model.num_inside_layer - 1][index_grid].insert_child(i)
+            # x, y = float(node[0]), float(node[1])
+            # model.gps_positions[i] = (x, y)
+            # index_node = in_which_grid(x, y, max_x, min_x, max_y, min_y)
+
+            cluster = all_cluster[i]
+            index_node = index_cluster[cluster]
+
+            child = model.M_local[model.num_inside_layer - 1][index_node].insert_child(i)
             model.M_local[model.num_inside_layer][i] = child
             i += 1
 

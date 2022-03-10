@@ -51,13 +51,15 @@ def error_rate(approx_value, real_value):
     return error
 
 
-def simple_evaluate():
+def simple_evaluate(print_flag, my_test_round):
     with open(get_config("node_data_path"), 'rb') as f:
         num_node = int(f.readline())
 
     embedding = load_embedding(get_config("embedding_final_data_path"))
     road_graph = get_road_graph()
     draw_data = []
+
+    sample_set = []
 
     total_error_rate = 0
     total_normal_error_rate = 0
@@ -66,7 +68,7 @@ def simple_evaluate():
     test_round = 0
     normal_round = 0
     overflow_round = 0
-    for i in range(get_config("test_round")):
+    for i in range(my_test_round):
         s = random.randint(0, num_node - 1)
         # s = 1
         try:
@@ -93,6 +95,12 @@ def simple_evaluate():
             if error_rate_value >= 100:
                 total_overflow_error_rate += error_rate_value
                 overflow_round += 1
+                sample = {
+                    "s": s,
+                    "t": t,
+                    "value": real_value
+                }
+                sample_set.append(sample)
             else:
                 total_normal_error_rate += error_rate_value
                 normal_round += 1
@@ -114,18 +122,20 @@ def simple_evaluate():
 
     count = [round(i * 100 / test_round, 4) for i in count]
 
-    return avg_error_rate, avg_normal_rate, avg_overflow_rate, count, draw_data
+    if print_flag:
+        print(avg_error_rate)
+        print(avg_normal_rate)
+        print(avg_overflow_rate)
+        print(count)
+        print(draw_data[10000], draw_data[25000], draw_data[50000],
+              draw_data[75000], draw_data[90000], draw_data[-1])
+
+    return sample_set
 
 
 if __name__ == "__main__":
-    avg_error_rate, avg_normal_rate, avg_overflow_rate, count, draw_data = simple_evaluate()
+    simple_evaluate(True, get_config("test_round"))
 
-    print(avg_error_rate)
-    print(avg_normal_rate)
-    print(avg_overflow_rate)
-    print(count)
-    print(draw_data[10000], draw_data[25000], draw_data[50000],
-          draw_data[75000], draw_data[90000], draw_data[-1])
 
 
 
