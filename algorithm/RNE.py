@@ -22,6 +22,8 @@ def hierarchical_road_network_embedding():
             alpha_list[i] = level_learning_rate(level, i)
         training_hier(model, alpha_list, sample_set)
 
+    csv_model_save(model)
+
     # fine tuning
     print_flag = False
     test_round = get_config("test_round")
