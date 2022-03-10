@@ -24,7 +24,7 @@ model_config = {
     "norm_factor": 3,
 
     "error_based_epoch": 10,
-    "sample_N": 1,
+    "sample_N": 1000,
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
     # TODO:做下坐标和哪个啥的映射关系；;
