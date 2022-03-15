@@ -65,9 +65,9 @@ def simple_evaluate(print_flag, my_test_round):
     total_normal_error_rate = 0
     total_overflow_error_rate = 0
 
-    test_round = 0
-    normal_round = 0
-    overflow_round = 0
+    test_round = 1
+    normal_round = 1
+    overflow_round = 1
     for i in range(my_test_round):
         s = random.randint(0, num_node - 1)
         # s = 1
@@ -80,27 +80,28 @@ def simple_evaluate(print_flag, my_test_round):
             try:
                 t = random.randint(0, num_node - 1)
                 # t = 200000
-                real_value = dijkstra_result_s[t] / 10**get_config("norm_factor")
+                real_value = dijkstra_result_s[t]
             except Exception as e:
                 continue
 
             vector_s = np.array(embedding[s]).astype(np.float)
             vector_t = np.array(embedding[t]).astype(np.float)
-            approx_value = np.linalg.norm(vector_s - vector_t, ord=1)
+            approx_value = np.linalg.norm(vector_s - vector_t, ord=1) * 10**get_config("norm_factor")
             # approx_value = np.sum(abs(vector_s - vector_t), keepdims=True)
             error_rate_value = error_rate(approx_value, real_value) * 100
 
             test_round += 1
             total_error_rate += error_rate_value
-            if error_rate_value >= 100:
-                total_overflow_error_rate += error_rate_value
-                overflow_round += 1
+            if error_rate_value >= 10:
                 sample = {
                     "s": s,
                     "t": t,
                     "value": real_value
                 }
                 sample_set.append(sample)
+            if error_rate_value >= 100:
+                total_overflow_error_rate += error_rate_value
+                overflow_round += 1
             else:
                 total_normal_error_rate += error_rate_value
                 normal_round += 1
