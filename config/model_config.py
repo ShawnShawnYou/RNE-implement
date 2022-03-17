@@ -28,7 +28,7 @@ model_config = {
     "sample_N_t": 500,
     "landmark_rate": 0.0001,
     # TODO:做下坐标和哪个啥的映射关系；;
-    "test_round": 100
+    "test_round": 1000
 
 }
 

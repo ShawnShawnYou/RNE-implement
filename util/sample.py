@@ -58,14 +58,16 @@ def get_all_child_list(model, level, g_index):
     return all_child_list
 
 
-def simple_subgraph_level_samples(model, level, road_graph):
+def simple_subgraph_level_samples(model, level, road_graph, cache_dijkstra: dict):
     sample_set = []
 
     for i in range(get_config("sample_N")):
         s = random.randint(0, model.data_size - 1)
         # s = 1
         try:
-            dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
+            if s not in cache_dijkstra.keys():
+                cache_dijkstra[s] = nx.single_source_dijkstra_path_length(road_graph, s)
+            dijkstra_result_s = cache_dijkstra[s]
         except Exception as e:
             continue
         candidate_t = list(dijkstra_result_s.keys())

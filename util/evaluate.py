@@ -51,7 +51,7 @@ def error_rate(approx_value, real_value):
     return error
 
 
-def simple_evaluate(print_flag, my_test_round):
+def simple_evaluate(print_flag, my_test_round, cache_dijkstra):
     with open(get_config("node_data_path"), 'rb') as f:
         num_node = int(f.readline())
 
@@ -72,7 +72,9 @@ def simple_evaluate(print_flag, my_test_round):
         s = random.randint(0, num_node - 1)
         # s = 1
         try:
-            dijkstra_result_s = nx.single_source_dijkstra_path_length(road_graph, s)
+            if s not in cache_dijkstra.keys():
+                cache_dijkstra[s] = nx.single_source_dijkstra_path_length(road_graph, s)
+            dijkstra_result_s = cache_dijkstra[s]
         except Exception as e:
             continue
 
@@ -135,7 +137,7 @@ def simple_evaluate(print_flag, my_test_round):
 
 
 if __name__ == "__main__":
-    simple_evaluate(True, get_config("test_round"))
+    simple_evaluate(True, get_config("test_round"), {})
 
 
 
